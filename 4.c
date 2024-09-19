@@ -1,4 +1,4 @@
-//C Program to Implement Newton Raphson Method
+
 #include<stdio.h>
 #include<math.h>
 #define EPSILON 0.0001
@@ -20,7 +20,6 @@ int main()
     printf("Enter Maximum no of Iterations\n");
     scanf("%d",&maxIteration);
 
-//......Compute x1 and x2............. 
    
    do
    {
@@ -38,14 +37,12 @@ int main()
         }
     } while(1);
 
-    //find x0
+   
     if(fabs(f(x1)) < fabs(f(x2)))
         x0 = x1;
     else
         x1 = x2;    
 
-    //Apply Successive approximation to find the root b/w x1 and x2
-    //..........Find root............   
     for(i=1;i<=maxIteration;i++)
     {
       x = x0 - (f(x0)/differentiate(x0));  
