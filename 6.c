@@ -24,15 +24,13 @@ int main(){
     scanf("%d", &n);
     
     float x[n], y[n][n];
-    
-    // Input x values
+   
     printf("Enter the values of x:\n");
     for(int i=0; i<n; i++){
         printf("x[%d] = ", i);
         scanf("%f", &x[i]);
     }
     
-    // Input y values (corresponding to x values)
     printf("Enter the values of y:\n");
     for(int i=0; i<n; i++){
         printf("y[%d] = ", i);
