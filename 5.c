@@ -1,73 +1,53 @@
-//C Program to Implement Iteration Method
-#include<stdio.h>
-#include<math.h>
-#define EPSILON 0.001
-
-float f(float x)
+#include <stdio.h>
+#include <math.h>
+double f(double x)
 {
-    return x*x*x + x*x -1;
+    return (cos(x)-3*x+1);
 }
-
-float findValueAt(float x)
+double g(double x)
 {
-    return 1/sqrt(1+x);
+    return ((1.0+cos(x))/3.0);
 }
-float differentiate(float x)
+double dg(double x)
 {
-    return 1/2.0 * (pow(1,pow((1+x),3/2.0)));
+    return(-sin(x)/3.0);
 }
-
-int main()
+double root(double a,double b)
 {
-    int maxIteration,i;
-    float a,b,x,x0;
-    printf("Enter Maximum no of Iterations\n");
-    scanf("%d",&maxIteration);
-
-//......Compute a and b............. 
-   
-   do
-   {
-        printf("Enter the value of a and b(starting boundary)");
-        scanf("%f%f",&a,&b);
-        if(f(a)*f(b)>0)
+    int i = 1;
+    double x0,x1;
+    if(f(a)*f(b)<0)
+    {
+        x0=(a+b)/2.0;
+        printf("X0=%lf\n",x0);
+        if((fabs(dg(a))<1) && (fabs(dg(b)<1)))
         {
-           printf("Boundary Values are Invalid\n");
-           continue;
+            while(1)
+            {
+                x1=g(x0);
+                printf("X%d=%lf\n",i,x1);
+                if((fabs(x1-x0))<0.0009)
+                {
+                    break;
+                }
+                x0=x1;
+                i++;
+            }
+            printf("Number of Iterations=%d\n",i);
+            return x1;
         }
-        else
-        {
-            printf("Roots Lie between %f and %f\n",a,b);
-            break;
-        }
-    } while(1);
-
-    //find x0
-    x0= (a+b)/2;
-    //check if the function form used is valid or invalid
-    if(fabs(differentiate(x0))<1)
-        printf("Function Form is Correct. Iteration Method can be applied\n");
+    }
     else
     {
-        printf("Function Form is NOT Correct. Iteration Method CAN'T be applied\n");
-        return 0;
+        printf("Invalid inputs!!");
     }
-
-    //Apply Successive approximation to find the root b/w a and b
-    //..........Find root............   
-    
-    for(i=1;i<=maxIteration;i++)
-    {
-      x = findValueAt(x0);   //find the mid point
-      
-      if(fabs(x-x0)<EPSILON)
-      {
-           printf("Iterations=%d  Final Root=%f\n",i,x);
-           return 0;
-      }      
-      printf("Iterations=%d  Roots=%f\n",i,x); 
-      x0=x;
-    }
-    printf("Root=%f  Total Iterations=%d",x,--i);
-    return 0;
+}
+int main()
+{
+    double a, b;
+    printf("Enter the intervals: ");
+    scanf("%lf %lf", &a, &b);
+    double r=root(a,b);
+    printf("Root: %lf\n", r);
+return 0;
 }
