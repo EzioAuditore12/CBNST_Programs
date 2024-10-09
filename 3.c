@@ -50,14 +50,14 @@ int main()
       x3 = findX(x1,x2);  
       if(fabs(x3-x)<EPSILON)
       { 
-          printf("Root=%f  Total Iterations=%d",x,i);
+          printf("Root=%f  Total Iterations=%d\n",x,i);
           return 0;
 
       }
       x=x3;  //Important
       i++; 
     }while(i<=maxIteration);
-    printf("Root=%f  Total Iterations=%d",x,--i);
+    printf("Root=%f  Total Iterations=%d\n",x,--i);
 
     return 0;
 }

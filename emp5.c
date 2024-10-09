@@ -1,46 +1,161 @@
 #include <stdio.h>
-typedef struct processes {
-    char id;
-    int bt,at,rt,wt,tat;
-}processes;
-void round_robin(processes p[],int n,int tq) {
-    int t = 0,rem=n,total_wt=0,total_tat= 0;
-    printf("\nGantt Chart:\n0");
-    while (rem>0) {
-        for (int i=0;i<n; i++) {
-            if (p[i].rt > 0 && p[i].at <= t) {
-                int ts;
-                if (p[i].rt < tq) ts = p[i].rt;
-                else ts = tq;
-                p[i].rt -= ts;
-                t += ts;
-                printf(" -- %c -- %d", p[i].id, t);
-                if (p[i].rt == 0) {
-                    rem--;
-                    p[i].tat = t - p[i].at;
-                    p[i].wt = p[i].tat - p[i].bt;
-                    total_wt += p[i].wt;
-                    total_tat += p[i].tat;
-                }
-            }
+#include <stdlib.h>
+#include <ctype.h>
+
+
+typedef struct data{
+    char name;
+    int bt, at, st, cmp, wt, tat;
+} process;
+
+
+process rq[10000];
+int b = -1;
+int f = 0;
+
+void enqueue(process p){
+    if(f==9999) return;
+    rq[f++] = p;
+}
+
+process dequeue(){
+    process fal;
+    fal.bt = -1;
+    ++b;
+    if(b==9999 || b == -1) return fal;
+    return rq[b];
+}
+
+int isCompleted(){
+    return (b == f);
+}
+
+void process_printer(process pq[], int n){
+    printf("\n--------------------------------------------------------------------------------------------------------------------");
+    printf("\nProcess name\tBurst time\tArrival time\tStart Time\tCompleted Time\tTurn Around time\tWeighting Time\n");
+    for(int i=0;i<n;i++){
+        printf("%c\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t\t%d\n", pq[i].name, pq[i].bt, pq[i].at, pq[i].st, pq[i].cmp, pq[i].tat, pq[i].wt);
+    }
+    printf("--------------------------------------------------------------------------------------------------------------------\n");
+}
+
+int index_finder(process my_p[], int n, process top){
+    int pi = 0;
+    for(int i=0;i<n;i++){
+        if(my_p[i].name == top.name){
+            pi = i;break;
         }
     }
-    printf("\nAvg WT: %.2f\n",(float)total_wt/n);
-    printf("Avg TAT: %.2f\n",(float)total_tat/n);
+    return pi;
 }
-int main() {
-    int n, tq;
-    printf("Enter TQ: ");
-    scanf("%d", &tq);
-    printf("Enter number of processes: ");
-    scanf("%d", &n);
-     processes p[n];
-    for (int i = 0; i < n; i++) {
-        printf("Enter ID, BT, AT for process %d: ", i + 1);
-        getchar();
-        scanf("%c %d %d", &p[i].id, &p[i].bt, &p[i].at);
-        p[i].rt = p[i].bt;
+
+void timeSetter(process my_p[], int n, process top, int time){
+    if(top.bt == 0){
+        int pi = index_finder(my_p, n, top);
+        my_p[pi].cmp = time+1;
+        my_p[pi].tat = time + 1 - my_p[pi].at;
+        my_p[pi].wt = my_p[pi].tat - my_p[pi].bt;
     }
-    round_robin(p, n, tq);
-    return 0;
+}
+
+process *roundRobin(int gant_size, process my_p[], int n, int tq){
+    process *gant_chart = malloc(sizeof(process) * gant_size);
+
+    // gi = gant_chart index
+    int time = -1, gi = 0;
+
+    int temp_tq = 0;
+
+    int pi = 0;
+    process top, current_process;
+    int cur_ar_time = -1;
+    int i = 0;
+
+    while(!isCompleted()){
+        time++;
+        
+        // process arrived, then enqueue
+        if(time == my_p[pi].at){
+            current_process = my_p[pi];
+            enqueue(current_process);
+            pi++;
+        }
+
+        if(top.bt == 0 || temp_tq == 0 && f!=0){
+            top = dequeue();
+
+            if(top.at > cur_ar_time){
+                i = index_finder(my_p, n, top);
+                my_p[i].st = time;
+                cur_ar_time = top.at;
+            }
+
+            if(top.bt == -1 || top.bt ==0){
+                continue; // if no process in queue yet
+            }
+            temp_tq = tq;
+        }
+        
+        if(temp_tq > 0){
+            temp_tq--;
+            
+            if(top.bt > 0){
+                top.bt--;
+                // printf("\nTime: %d, ID: %c, bt: %d\n", time, top.name, top.bt);
+                timeSetter(my_p, n, top, time);
+            }
+        }
+        if(top.bt==0 || temp_tq == 0 && f!=0 ){
+            gant_chart[gi++] = top;
+            if(top.bt != 0)
+            enqueue(top);
+        }
+
+        
+    }
+
+    return gant_chart;
+
+}
+
+void print_gant(process gant_chart[], int gant_size, int tq){
+    printf("\n\nGantchart: \n");
+    for(int i=0;isalpha(gant_chart[i].name);i++){
+        printf("%c, ", gant_chart[i].name);
+    }
+}
+
+int main(){
+    // freopen("rrinput.txt", "r", stdin);
+    int n;
+    int gant_size = 0;
+    printf("Enter number of process: ");
+    scanf("%d",&n);
+
+    process my_p[n];
+    int tq = 3;
+    printf("Enter number of TQ: ");
+    scanf("%d",&tq);
+    printf("Enter processes data\n");
+    
+   
+
+    for(int i=0;i<n;i++){
+        printf("Enter name: ");
+        scanf(" %c", &my_p[i].name);
+
+        printf("Enter arrival time: ");
+        scanf("%d", &my_p[i].at);
+
+        printf("Enter Burst time: ");
+        scanf("%d", &my_p[i].bt);
+
+        gant_size += my_p[i].bt;
+    }
+
+    process *gant_chart = roundRobin(gant_size, my_p, n, tq);
+
+    print_gant(gant_chart, gant_size, tq);
+
+    process_printer(my_p, n);
 }
