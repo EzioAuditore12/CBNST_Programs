@@ -1,67 +1,46 @@
 #include<stdio.h>
-float fact(int n)
+#include<math.h>
+float f(float x)
 {
-    float f=1.0;
-    for(int i=2;i<=n;i++)
-    {
-        f=f*i;
-    }
-    return f;
+     return x*x*x-2*x-5;
 }
-float P(float p,int n)
+float root(float a,float b)
 {
-    float temp = p;
-    for(int i=1;i<n;i++)
+    int i=1;
+    float x;
+    if(f(a)*f(b)<0)
     {
-        temp=temp*(temp-i);
+        while(1)
+        {
+            x=b-((b-a)*f(b))/(f(b)-f(a));
+            printf("X%d=%f\n",i,x);
+            if(f(a)*f(x)<0)
+            {
+                b=x;
+            }
+            else
+            {
+                a=x;
+            }
+            if(fabs(f(x))<0.0009)
+            {
+                break;
+            }
+            i++;
+        }
+        return x;
     }
-    return temp;
+    else
+    {
+        printf("Invalid Inputs!!");
+    }
 }
 int main()
 {
-    int n,i,j;
-    printf("Enter number of data elements:");
-    scanf("%d",&n);
-    float x[n];
-    float y[n][n];
-    printf("Enter the coordinates given:\nx y\n");
-    for(i=0;i<n;i++)
-    {
-        scanf("%f\t%f",&x[i],&y[i][0]);
-    }
-    for(i=1;i<n;i++)
-    {
-        for(j=0;j<n-i;j++)
-        {
-            y[j][i]=y[j+1][i-1]-y[j][i-1];
-        }
-    }
-    printf("\nDifference table:\n");
-    for(i=0;i<n;i++)
-    {
-        for(j=0;j<n-i;j++)
-        {
-            printf("%f  ",y[i][j]);
-        }
-        printf("\n");
-    }
-    float v,x0,p,sum;
-    printf("Enter x to find y:");
-    scanf("%f",&v);
-    i=0;
-    while(v>=x[i])
-    {
-        i++;
-    }
-    x0=x[--i];
-    printf("\nx0=%f\n",x0);
-
-    sum=y[i][0];
-    p=(v-x0)/(x[1]-x[0]);
-    for(j=1;j<n;j++)
-    {
-        sum=sum+(P(p,j)*y[i][j])/fact(j);
-    }
-    printf("Interpolated value=%f",sum);
+    float a,b,r;
+    printf("Enter intervals:");
+    scanf("%f%f",&a,&b);
+    r=root(a,b);
+    printf("Root = %f",r);
 return 0;
 }
