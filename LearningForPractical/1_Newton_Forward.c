@@ -14,7 +14,7 @@ printf("Enter the value of y intervals:\n");
 for(int i=0;i<n;i++){
     scanf("%f",&arr[i][1]);
 }
-for(int j=2;j<n-n;j++){
+for(int j=2;j<=n;j++){
     for(int i=0;i<=n-j;i++){
         arr[i][j]=arr[i+1][j-1]-arr[i][j-1];
     }
@@ -28,14 +28,14 @@ for(int i=0;i<n;i++){
 float x;
 printf("Enter the value of x at which you want to interpolate:");
 scanf("%f",&x);
-float h=arr[0][1]-arr[0][0];
+float h=arr[1][0]-arr[0][0];
 float u=((x-arr[0][0])/h);
 int f=1;
 float u1=u;
 float y=arr[0][1];
 for(int i=2;i<=n;i++){
-    f*=(u-1);
     y+=(u1*arr[0][i])/f;
+    f*=i;
     u1*=(u-(i-1));
 }
 printf("\nValue at X = %f is = %f\n", x, y);
