@@ -1,42 +1,36 @@
-#include<stdio.h.>
+#include<stdio.h>
 #include<math.h>
+#define EPSILON 0.0001
+float f(float x){
+    return x*x*x-2*x-5;
+}
+float bisect(float x1,float x2){
+    return (x1+x2)/2;
+}
 int main(){
-    int n;
-    printf("Enter the number of terms you want:");
+    int n,i=1;
+    printf("Enter the max number of iteration you want:");
     scanf("%d",&n);
-    float arr[n][n+1];
-    printf("Enter the values for x interval:\n");
-    for(int i=0;i<n;i++){
-        scanf("%f",&arr[i][0]);
-    }
-    printf("Enter the values for y interval:\n");
-    for(int i=0;i<n;i++){
-        scanf("%f",&arr[i][1]);
-    }
-    for(int j=2;j<=n;j++){
-        for(int i=0;i<=n-j;i++){
-            arr[i][j]=arr[i+1][j-1]-arr[i][j-1];
+    float x1,x2;
+    printf("Enter the intervals:");
+    scanf("%f%f",&x1,&x2);
+    float x=bisect(x1,x2);
+    float x0,x3;
+    do{
+        if(f(x1)*f(x2)<0){
+            x2=x;
         }
-    }
-    for(int i=0;i<n;i++){
-        for(int j=0;j<=n-i;j++){
-            printf("%f\t",arr[i][j]);
+        else{
+            x1=x;
         }
-        printf("\n");
-    }
-    float x;
-    printf("Enter the value of which you want to interpolate:");
-    scanf("%f",&x);
-    int h=arr[1][0]-arr[0][0];
-    float u=(x-arr[0][0])/h;
-    float u1=u;
-    int f=1;
-    float y=arr[0][1];
-    for(int i=2;i<=n;i++){
-        f*=(u-1);
-        y+=(u1*arr[0][i])/f;
-        u1*=(u-(i-1));
-    }
-    printf("\nValue at X = %f is = %f\n", x, y);
-    return 0;
+        x3=bisect(x1,x2);
+        printf("Iteration %d Root %f\n",i,x);
+        if(fabs(x3-x)<EPSILON){
+            printf("Iteration %d Root %f\n",i,x);
+            return 0;
+        }
+        x=x3;
+        i++;
+    }while(i<=n);
+    printf("FInal root %f Iteration %d\n",x,--i);
 }
