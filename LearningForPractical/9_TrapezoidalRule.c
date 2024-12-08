@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<math.h>
 float equation(float x){
-    return (1/(1+(pow(x,2))));
+    return x*x*x;
 }
 int main()
 {
