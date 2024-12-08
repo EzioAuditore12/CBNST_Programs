@@ -1,7 +1,7 @@
 #include<stdio.h>
 
 float function(float x, float y) {
-    return x + y;
+    return (y-x)/(y+x);
 }
 
 int main() {

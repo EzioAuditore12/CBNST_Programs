@@ -26,7 +26,7 @@ int main() {
         y += (k1 + 2 * k2 + 2 * k3 + k4) / 6;
         x += h;
 
-        printf("After step %d: x = %.4f, y = %.4f\n", i + 1, x, y);
+        printf(" step %d: x = %.4f, y = %.4f\n", i + 1, x, y);
     }
 
     return 0;
